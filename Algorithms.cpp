@@ -66,7 +66,7 @@ namespace ariel
 
 	string Algorithms::isConnected(Graph g)
 	{
-		cout << "graph size is: " << g.get_size() << endl;
+		//cout << "graph size is: " << g.get_size() << endl;
 
 		if (g.isSim() == false)
 		{
@@ -94,32 +94,7 @@ namespace ariel
 		}
 	}
 
-	// bool Algorithms::dfs(Graph graph, size_t node, vector<bool> &visited, vector<bool> &inStack)
-	// {
-	// 	visited[node] = true;
-	// 	inStack[node] = true; // Mark node as being explored in the current DFS call
-
-	// 	// Explore unvisited neighbors
-	// 	for (size_t neighbor = 0; neighbor < graph.get_size(); ++neighbor)
-	// 	{
-	// 		// for (size_t neighbor : graph.getNeighbors(node)) {
-	// 		if (!visited[neighbor])
-	// 		{
-	// 			if (dfs(graph, neighbor, visited, inStack))
-	// 			{				 // Recursive call
-	// 				return true; // Cycle found
-	// 			}
-	// 		}
-	// 		else if (inStack[neighbor])
-	// 		{ // Back edge detected (cycle)
-	// 			return true;
-	// 		}
-	// 	}
-
-	// 	// Leaving this node (no cycle found in this branch)
-	// 	inStack[node] = false;
-	// 	return false; // No cycle found
-	// }
+	
 
 	
 
@@ -129,18 +104,14 @@ namespace ariel
 		{
 			for (size_t j = 0; j < graph.get_size(); j++)
 			{
-				if (graph.get_nei(i, j) < 0)
+				if (graph.get_nei(i, j) != 0)
 					return true;
 			}
 		}
 		return false;
 	}
 
-// 	struct Edge {
-//     size_t src;
-//     size_t dst;
-//     int weight;
-// };
+
 bool negativeCycle(Graph graph) {
   // Initialize distances to positive infinity (INT_MAX represents positive infinity)
   vector<int> dist(graph.get_size(), INT_MAX);
@@ -231,19 +202,69 @@ bool negativeCycle(Graph graph) {
     		path = std::to_string(start) + " -> " + path;
   		}
 	 	return path + " (Distance: " + std::to_string(dist[end]) + ")";
-
-  
-  
-
-
-    return "Invalid end node (negative)";
 	 
 	}
 
 	
 	string Algorithms::isBipartite(Graph g)
 	{
-		return "wvw";
+		//Check if the graph is connected
+		if (isConnected(g)=="0") {
+			return "The graph is not bipartite (not connected).";
+		}
+		size_t num_nodes = g.get_size();
+
+		// Initialize color array (0: uncolored, 1: color A, 2: color B)
+		size_t color[num_nodes] = {0}; // Initialize all colors to 0
+
+		// Start coloring from an arbitrary node
+		color[0] = 1; // Assign color A to the starting node
+
+		// Process each node using a queue
+		queue<size_t> q;
+		q.push(0);
+
+		 while (!q.empty()) {
+        size_t curr = q.front();
+        q.pop();
+
+        // Check neighbors of the current node
+        for (size_t neighbor = 0; neighbor < num_nodes; ++neighbor) {
+            // Skip diagonal (self-loops) and non-existent edges
+            if (neighbor == curr || g.get_nei(curr, neighbor) == 0) {
+                continue;
+            }
+
+            // If neighbor is uncolored, assign opposite color and enqueue
+            if (color[neighbor] == 0) {
+                color[neighbor] = 3 - color[curr];
+                q.push(neighbor);
+            }
+
+            // Detect cycle with same color (not bipartite)
+            else if (color[neighbor] == color[curr]) {
+                return "The graph is not bipartite.";
+            }
+        }
+    }
+	// Construct color sets (A and B) based on the color array
+    string colorA = "{";
+    string colorB = "{";
+    for (int i = 0; i < num_nodes; ++i) {
+        if (color[i] == 1) {
+            colorA += to_string(i) + ", ";
+        } else if (color[i] == 2) {
+            colorB += to_string(i) + ", ";
+        }
+    }
+	// Remove trailing commas and curly braces
+    colorA.pop_back();
+    colorA.pop_back();
+    colorB.pop_back();
+    colorB.pop_back();
+
+	return "The graph is bipartite: " + colorA + "}, " + colorB + "}.";
+	
 	}
 
 	
