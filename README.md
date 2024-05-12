@@ -1,29 +1,36 @@
-# מטלה 1 - גרפים (Classes and Namespaces)
+description of the code:
 
-המטרה שלכם במטלה הזאת היא ליצור מחלקה שמייצגת גרף ולממש אלגוריתמים על הגרפים (זה הזמן להזכר בקורס אלגוריתמים 1).
+for the function isConnected(g) i did an auxiliary function "isSim", that checking if the graph is unintentional or intentional-
+if the graph is symmetrical it means that its not intentional, and we need to do bfs only once.
+if the graph is intentional, we should do bfs as the number of vertices in the graph.
+If the BFS reaches all edges in the graph then the graph is connected.
 
-במטלה הזאת הייצוג של הגרף שלכם יתבצע בעזרת מטריצת שכנויות - https://he.wikipedia.org/wiki/%D7%9E%D7%98%D7%A8%D7%99%D7%A6%D7%AA_%D7%A9%D7%9B%D7%A0%D7%95%D7%AA.
 
-הגרף יכול להיות גרף מכוון ולא מכוון וגם גרף ממושקל. מטריצת השכנויות חייבת להיות מטריצה ריבועית.
+for the function shortestPath(g,start,end) i used belman ford algorithm (becouse we have edges with negative weight).
+1. I create a distance array to store the shortest distances from the start node (start) to all other nodes.
+2. i initialize all distances to positive infinity (INT_MAX).
+3. I did relaxations
+4. finding the shortest path
 
-עליכם לכתוב את הקבצים הבאים:
+for the function isContainsCycle(g) i used dfs algorithm
+1. Uses negativeCycle (assumed to check for cycles) and dfs (assumed to traverse the graph). Returns true if a cycle is found, false otherwise.
+2. Checks for cycles using negativeCycle (important for negative weights).
+3. Iterate through each node (i).
+4. For each unvisited node, calls dfs to explore starting from i.
+5. If dfs finds a cycle, returns true (with additional checks for specific cases).
+6. If no cycle found after all nodes, returns false.
 
-```
-Graph.cpp
-Algorithms.cpp
-```
+for the function isBipartite(g) first i Checked connectivity, If connected, it colors the graph using BFS:
+1. Starts with an arbitrary node (color A).
+2. Explores neighbors:
+    1. Uncolored: assigns opposite color and adds to queue.
+    2. Same color as current: detects cycle (not bipartite), returns "0".
+3. If coloring finishes without a cycle, the graph is bipartite.
 
-הקובץ `Graph.cpp` מכיל מחלקה המייצגת גרף.
-המחלקה מכילה את הפעולות `loadGraph` המקבלת מטריצת שכנויות וטוענת אותה לתוך הגרף ו-`printGraph` שמדפיסה את הייצוג של הגרף (הפורמט לבחירתכם, ראו דוגמה ב-`Demo.cpp`).
-
-הקובץ `Algorithms.cpp` מכיל מימושים לאלגוריתמים על גרפים. ביניהם:
-
-- `isConnected(g)` - האלגוריתם מקבל גרף ומחזיר 1 אם הגרף קשיר (אחרת מחזיר 0).
-- `shortestPath(g,start,end)` - האלגוריתם מקבל גרף, קודקוד התחלה וקודקוד סיום ומחזיר את המסלול הקל ביותר (במקרה שהגרף לא ממושקל - הקצר ביותר) בין שני הקודקודים. במידה ואין מסלול כזה, האלגוריתם יחזיר -1.
-- `isContainsCycle(g)` - האלגוריתם מקבל גרף ומדפיס מעגל כלשהו. אם לא קיים מעגל בגרף, האלגוריתם יחזיר 0.
-- `isBipartite(g)` - האלגוריתם מקבל גרף ומחזיר את החלוקה של הגרף לגרף דו-צדדי. אם אי אפשר לחלק את הגרף, האלגוריתם יחזיר 0.
-- `negativeCycle(g)` - האלגוריתם מקבל גרף ומוצא מעגל שלילי (כלומר מעגל שסכום המשקלים של הצלעות שלילי). אם לא קיים מעגל כזה, האלגוריתם ידפיס שלא קיים מעגל שלילי.
-
-הקובץ `Demo.cpp` מכיל דוגמאות של קלטים ופלטים.
-עליכם לכתוב בתחילת כל קובץ את מספר תעודת הזהות שלכם ואת המייל. כמו כן, בנוסף לקבצים של המטלה אתם נדרשים להגיש גם קובץ README המתאר את אופן המימוש ואת החלוקה שביצעתם בקוד (סוג של מדריך משתמש). אי עמידה בהנחיות תגרור הפחתה בציון. בהצלחה!
-  
+for the function negativeCycle(g) i use belman ford algorithm
+1. Initializes distances (dist) to positive infinity (INT_MAX) and sets distance of the first node to 0.
+2. Runs Bellman-Ford iterations (num_nodes - 1 times), For each node and its neighbors If an edge exists - Update the distance of the neighbor
+if a shorter path is found through the current node.
+3. Checks for negative cycles:
+   1. Iterates again, looking for further distance updates.
+   2. If any distance decreases in this iteration, it indicates a negative cycle, and the function returns true, else false.
