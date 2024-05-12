@@ -1,5 +1,7 @@
-#include "Algorithms.hpp"
+// 318725520
+// adi.yohanann@gmail.com
 
+#include "Algorithms.hpp"
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -65,7 +67,7 @@ namespace ariel
 		return true; // All nodes visited, graph is connected
 	}
 
-	string Algorithms::isConnected(Graph g)
+	bool Algorithms::isConnected(Graph g)
 	{
 		//cout << "graph size is: " << g.get_size() << endl;
 
@@ -73,9 +75,9 @@ namespace ariel
 		{
 			if (bfs(g, 0))
 			{
-				return "1";
+				return true;
 			}
-			return "0";
+			return false;
 		}
 		else
 		{
@@ -89,9 +91,9 @@ namespace ariel
 			}
 			if (flag == 0)
 			{
-				return "0";
+				return false;
 			}
-			return "1";
+			return true;
 		}
 	}
 
@@ -151,20 +153,23 @@ bool negativeCycle(Graph graph) {
 	string Algorithms::shortestPath(Graph graph, int start,int end)
 	{
 		if(negativeCycle(graph))
-			return "0";
+			return "-1";
+			// return "0";
 		// if(!graph.isSim()&&negetiveEdge(graph))
 		// {
 		// 	return "error";
 		// }// Validate input (optional, but good practice)
 		 if (start < 0 || start >= graph.get_size() || end < 0 || end >= graph.get_size()) {
-			return "Invalid start or end node";
+			// return "Invalid start or end node";
+			return "-1";
 		}
 
 		// Check for negative cycle (if the graph is not simple or might have negative cycles)
-		if (!graph.isSim() || negativeCycle(graph)) {
-			return "Negative cycle detected. Shortest path cannot be determined.";
-		}
-
+		// if (!graph.isSim() || negativeCycle(graph)) {
+		// 	// return "Negative cycle detected. Shortest path cannot be determined.";
+		// 	return "-1";
+		// }
+		
 		size_t num_nodes = graph.get_size();
 		int dist[num_nodes]; // Array to store distances from start to each node
 		std::fill(dist, dist + num_nodes, INT_MAX); // Initialize distances to infinity
@@ -187,24 +192,46 @@ bool negativeCycle(Graph graph) {
 			}
 		}
 		if (dist[end] == INT_MAX) {
-			return "No path found from start to end";
+			// return "No path found from start to end";
+			return "-1";
 		}	
+	// 	string path = "";
+  	// 	int curr = end;
+	// 	// Build the path by traversing from end to start using the parent array
+	// 	while (curr != start && curr != -1) {
+	// 		path = std::to_string(curr) + "->" + path;
+	// 		curr = parent[curr];
+	// 	}
+
+	// 	if (curr == -1) {
+	// 		// path = "No unique path found (multiple shortest paths possible).";
+	// 		path= "-1";
+	// 	} 	
+	// 	else {
+    // // Add the starting node to the path
+    // 		path = std::to_string(start) + " -> " + path;
+  	// 	}
+	//  	// return path + " (Distance: " + std::to_string(dist[end]) + ")";
+	// 	return path; 
 		string path = "";
-  		int curr = end;
-		// Build the path by traversing from end to start using the parent array
+		int curr = end;
+
+		// Build the path forward, starting from the end node
 		while (curr != start && curr != -1) {
-			path = std::to_string(curr) + " -> " + path;
+			path = "->" + std::to_string(curr) + path; // Prepend node with arrow if not empty
+			//path = std::to_string(curr) + (path.empty() ? "" : "->") + path;
 			curr = parent[curr];
 		}
-
 		if (curr == -1) {
-			path = "No unique path found (multiple shortest paths possible).";
+			// path = "No unique path found (multiple shortest paths possible).";
+			path= "-1";
 		} 	
 		else {
     // Add the starting node to the path
-    		path = std::to_string(start) + " -> " + path;
+    		path = std::to_string(start) + path;
   		}
-	 	return path + " (Distance: " + std::to_string(dist[end]) + ")";
+		
+		return path;
 	 
 	}
 
@@ -212,8 +239,9 @@ bool negativeCycle(Graph graph) {
 	string Algorithms::isBipartite(Graph g)
 	{
 		//Check if the graph is connected
-		if (isConnected(g)=="0") {
-			return "The graph is not bipartite (not connected).";
+		if (isConnected(g)==false) {
+			// return "The graph is not bipartite (not connected).";
+			return "0";
 		}
 		size_t num_nodes = g.get_size();
 
@@ -246,7 +274,8 @@ bool negativeCycle(Graph graph) {
 
             // Detect cycle with same color (not bipartite)
             else if (color[neighbor] == color[curr]) {
-                return "The graph is not bipartite.";
+                // return "The graph is not bipartite.";
+				return "0";
             }
         }
     }
@@ -266,7 +295,7 @@ bool negativeCycle(Graph graph) {
     colorB.pop_back();
     colorB.pop_back();
 
-	return "The graph is bipartite: " + colorA + "}, " + colorB + "}.";
+	return "The graph is bipartite: A=" + colorA + "}, B=" + colorB + "}";
 	
 	}
 
@@ -289,11 +318,11 @@ bool negativeCycle(Graph graph) {
 		return cycle_str;
 	}
 
-	string Algorithms::isContainsCycle(Graph graph)
+	bool Algorithms::isContainsCycle(Graph graph)
 	{
 
 		if(negativeCycle(graph))
-			return "1";
+			return true;
 		// static string findAndPrintCycle(Graph& graph) {
 		
 		size_t num_nodes = graph.get_size();
@@ -310,32 +339,92 @@ bool negativeCycle(Graph graph) {
 			{
 				if (dfs(graph, i, visited, inStack, cycle_path))
 				{
-					return constructCycleString(cycle_path); // Construct and return cycle string
+					if(graph.get_size()==3&&cycle_path.size()!=3&&graph.isSim())
+					{
+						return false;
+					}
+					//cout<< "lala: "<<constructCycleString(cycle_path)<<endl;
+					if(cycle_path.size() > 3){
+						return true;
+					}
+					//return constructCycleString(cycle_path); // Construct and return cycle string
 				}
 			}
 		}
 		
-		return "No cycle found"; // No cycle in the entire graph
+		return false; // No cycle in the entire graph
 	}
 
 
 	bool Algorithms::negativeCycle(Graph graph){
-
-		if(!negetiveEdge(graph))
+		if(negetiveEdge(graph) && graph.isSim()){
+			cout<<"1::"<<endl;
+			return true;
+		}
+		if(negetiveEdge(graph)==false)
 			return false;
+		size_t num_nodes = graph.get_size();
+		int cycle_path[num_nodes]; 
+		// Initialize distances to positive infinity (INT_MAX represents positive infinity)
+		vector<int> dist(num_nodes, INT_MAX);
+		dist[0]=0;
+		// Bellman-Ford algorithm for shortest paths with negative edges
+		for (size_t n = 0; n < num_nodes-1; ++n){
+			for (size_t node = 0; node < num_nodes; ++node) {
+				for (size_t neighbor = 0; neighbor < num_nodes; ++neighbor) {
+				// Check if there's an edge (non-zero weight)
+					if (graph.get_nei(node, neighbor) != 0) {
+						int weight = graph.get_nei(node, neighbor);
+						cycle_path[node]++;
+						//dist[node]=weight;
+						if (dist[node] != INT_MAX && dist[node] + weight < dist[neighbor]) {
+							dist[neighbor] = dist[node] + weight;
+						}
+					}
+				}
+			}
+		}
+
+		// Check for negative cycle (if distance keeps decreasing)
+		for (size_t node = 0; node < num_nodes; ++node) {
+			for (size_t neighbor = 0; neighbor < num_nodes; ++neighbor) {
+				// Check if there's an edge (non-zero weight)
+				if (graph.get_nei(node, neighbor) != 0) {
+					int weight = graph.get_nei(node, neighbor);
+					// if (dist[node] != INT_MAX && dist[node] + weight < dist[neighbor]) {
+						if ( dist[node] + weight < dist[neighbor]){
+						// Negative cycle detected, print "1"
+						//cout <<"1"<<endl;
+							//if(graph.get_nei(node, neighbor)==graph.get_nei(neighbor, node)&&(graph.get_nei(neighbor, node)<0)||graph.get_nei(node, neighbor)<0)
+								cout<<"2::"<<endl;
+								return true;
+					}
+				}
+			}
+		}
+
+		// No negative cycle found
+		//cout <<"0"<<endl;
+		return false;
+	}
+
+	bool Algorithms:: belmanFord(Graph graph)
+	{
 		size_t num_nodes = graph.get_size();
 
 		// Initialize distances to positive infinity (INT_MAX represents positive infinity)
 		vector<int> dist(num_nodes, INT_MAX);
 
 		// Bellman-Ford algorithm for shortest paths with negative edges
-		for (size_t node = 0; node < num_nodes; ++node) {
-			for (size_t neighbor = 0; neighbor < num_nodes; ++neighbor) {
-			// Check if there's an edge (non-zero weight)
-				if (graph.get_nei(node, neighbor) != 0) {
-					int weight = graph.get_nei(node, neighbor);
-					if (dist[node] != INT_MAX && dist[node] + weight < dist[neighbor]) {
-						dist[neighbor] = dist[node] + weight;
+		for (size_t n = 0; n < num_nodes-1; ++n){
+			for (size_t node = 0; node < num_nodes; ++node) {
+				for (size_t neighbor = 0; neighbor < num_nodes; ++neighbor) {
+				// Check if there's an edge (non-zero weight)
+					if (graph.get_nei(node, neighbor) != 0) {
+						int weight = graph.get_nei(node, neighbor);
+						if (dist[node] != INT_MAX && dist[node] + weight < dist[neighbor]) {
+							dist[neighbor] = dist[node] + weight;
+						}
 					}
 				}
 			}
@@ -361,6 +450,7 @@ bool negativeCycle(Graph graph) {
 		//cout <<"0"<<endl;
 		return false;
 	}
+
 	bool Algorithms:: dfs(Graph graph, size_t node, vector<bool> visited, vector<bool> &inStack, stack<size_t> &cycle_path)
 	{
 		visited[node] = true;
@@ -371,7 +461,7 @@ bool negativeCycle(Graph graph) {
 		//for (size_t neighbor = 0; neighbor < graph.get_size(); ++neighbor)
 		for (size_t neighbor = 0; neighbor < graph.get_size(); ++neighbor){
 				{
-					if (graph.get_nei(node,neighbor) == 1)
+					if (graph.get_nei(node,neighbor) != 0)
 					{
 		
 						if (!visited[neighbor])

@@ -1,3 +1,6 @@
+// 318725520
+// adi.yohanann@gmail.com
+
 #include "Graph.hpp"
 
 using namespace std;
@@ -10,7 +13,13 @@ namespace ariel {
         return this->_nei;
     }
 
-    void Graph::loadGraph(vector<vector<int>> graph) {
+    void Graph::loadGraph(vector<vector<int>> graph) 
+    {
+        for(size_t i=0; i<graph.size(); i++)
+        {            
+            if(graph[i].size()!=graph.size())
+                throw std::runtime_error("An error occurred.");           
+        }
         this->_nei = graph;
         this->_isSim =this->isSim();
     }

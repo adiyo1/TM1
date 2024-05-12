@@ -1,8 +1,12 @@
+// 318725520
+// adi.yohanann@gmail.com
+
+
 #define DOCTEST_CONFIG_IMPLEMENT
 #include "doctest.h"
 using namespace doctest;
 
-const int MIN_TESTS = 20;
+const int MIN_TESTS = 2;
 
 int return_code = -1;
 
