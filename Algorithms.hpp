@@ -1,3 +1,7 @@
+// 318725520
+// adi.yohanann@gmail.com
+
+
 #include <iostream>
 #include "Graph.hpp"
 #include <stack>
@@ -7,9 +11,9 @@ namespace ariel {
         public:
 
             Algorithms();
-            static string isConnected(Graph g);
+            static bool isConnected(Graph g);
             static string shortestPath(Graph g, int x, int y);
-            static string isContainsCycle(Graph g);
+            static bool isContainsCycle(Graph g);
             static string isBipartite(Graph g);
             //static vector<vector<int>> convert_graph_to_adjacency_list( Graph& graph);
             static bool bfs(Graph graph, size_t start);
@@ -22,7 +26,7 @@ namespace ariel {
                       vector<bool> inStack, stack<int> current_path,
                       stack<int> cycle_path);
             static string constructCycleString(stack<int> cycle_path);
-
+            static bool  belmanFord(Graph graph);
 
     };  
 }
