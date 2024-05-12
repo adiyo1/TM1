@@ -12,13 +12,13 @@ namespace ariel {
 
     class Graph {
 
-        vector<vector<size_t>> _nei;
+        vector<vector<int>> _nei;
         bool _isSim;
         public:
             
             Graph();
-            vector<vector<size_t>>& getNei();
-            void loadGraph(vector<vector<size_t>> graph);
+            vector<vector<int>>& getNei();
+            void loadGraph(vector<vector<int>> graph);
             void printGraph();
             size_t get_size();
             int get_nei(size_t i, size_t j);

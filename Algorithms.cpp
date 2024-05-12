@@ -40,7 +40,7 @@ namespace ariel
 
 			for (size_t neighbor = 0; neighbor < num_nodes; ++neighbor)
 			{
-				if (graph.getNei()[current_node][neighbor] >= 1)
+				if (graph.getNei()[current_node][neighbor] !=0)
 				{
 					// Process neighbor (code to be executed for each neighbor)
 					if (!visited[neighbor])
@@ -51,6 +51,7 @@ namespace ariel
 				}
 			}
 		}
+		
 
 		// Check if all nodes are visited (connected)
 		for (bool v : visited)
@@ -104,7 +105,7 @@ namespace ariel
 		{
 			for (size_t j = 0; j < graph.get_size(); j++)
 			{
-				if (graph.get_nei(i, j) != 0)
+				if (graph.get_nei(i, j) < 0)
 					return true;
 			}
 		}
@@ -149,6 +150,8 @@ bool negativeCycle(Graph graph) {
 
 	string Algorithms::shortestPath(Graph graph, int start,int end)
 	{
+		if(negativeCycle(graph))
+			return "0";
 		// if(!graph.isSim()&&negetiveEdge(graph))
 		// {
 		// 	return "error";
@@ -270,6 +273,12 @@ bool negativeCycle(Graph graph) {
 	
 	 string Algorithms::constructCycleString(stack<size_t> cycle_path)
 	{
+		// string cycle_str2;
+		// size_t top1 = cycle_path.top();
+		// cycle_str2 = to_string(top1);
+		if(cycle_path.size()<=3)
+			return "0";
+
 		string cycle_str;
 		while (!cycle_path.empty())
 		{
@@ -282,7 +291,11 @@ bool negativeCycle(Graph graph) {
 
 	string Algorithms::isContainsCycle(Graph graph)
 	{
+
+		if(negativeCycle(graph))
+			return "1";
 		// static string findAndPrintCycle(Graph& graph) {
+		
 		size_t num_nodes = graph.get_size();
 
 		// Visited and inStack vectors for tracking exploration
@@ -301,11 +314,52 @@ bool negativeCycle(Graph graph) {
 				}
 			}
 		}
-
+		
 		return "No cycle found"; // No cycle in the entire graph
 	}
-	bool Algorithms::negativeCycle1(Graph graph){
-		return true;
+
+
+	bool Algorithms::negativeCycle(Graph graph){
+
+		if(!negetiveEdge(graph))
+			return false;
+		size_t num_nodes = graph.get_size();
+
+		// Initialize distances to positive infinity (INT_MAX represents positive infinity)
+		vector<int> dist(num_nodes, INT_MAX);
+
+		// Bellman-Ford algorithm for shortest paths with negative edges
+		for (size_t node = 0; node < num_nodes; ++node) {
+			for (size_t neighbor = 0; neighbor < num_nodes; ++neighbor) {
+			// Check if there's an edge (non-zero weight)
+				if (graph.get_nei(node, neighbor) != 0) {
+					int weight = graph.get_nei(node, neighbor);
+					if (dist[node] != INT_MAX && dist[node] + weight < dist[neighbor]) {
+						dist[neighbor] = dist[node] + weight;
+					}
+				}
+			}
+		}
+
+		// Check for negative cycle (if distance keeps decreasing)
+		for (size_t node = 0; node < num_nodes; ++node) {
+			for (size_t neighbor = 0; neighbor < num_nodes; ++neighbor) {
+				// Check if there's an edge (non-zero weight)
+				if (graph.get_nei(node, neighbor) != 0) {
+					int weight = graph.get_nei(node, neighbor);
+					// if (dist[node] != INT_MAX && dist[node] + weight < dist[neighbor]) {
+						if ( dist[node] + weight < dist[neighbor]){
+						// Negative cycle detected, print "1"
+						//cout <<"1"<<endl;
+						return true;
+					}
+				}
+			}
+		}
+
+		// No negative cycle found
+		//cout <<"0"<<endl;
+		return false;
 	}
 	bool Algorithms:: dfs(Graph graph, size_t node, vector<bool> visited, vector<bool> &inStack, stack<size_t> &cycle_path)
 	{
@@ -341,5 +395,8 @@ bool negativeCycle(Graph graph) {
         cycle_path.pop();  // Remove current node from potential path
         return false; // No cycle found
 	}
+	
+
+	
 
 }

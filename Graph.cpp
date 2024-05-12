@@ -6,14 +6,15 @@ using namespace std;
 namespace ariel {
 
     Graph::Graph() {}
-    vector<vector<size_t>>& Graph::getNei(){
+    vector<vector<int>>& Graph::getNei(){
         return this->_nei;
     }
 
-    void Graph::loadGraph(vector<vector<size_t>> graph) {
+    void Graph::loadGraph(vector<vector<int>> graph) {
         this->_nei = graph;
         this->_isSim =this->isSim();
     }
+    
     size_t Graph::get_size() {
         // Check if the adjacency matrix has been loaded
         if (this->_nei.empty()) {
@@ -24,11 +25,23 @@ namespace ariel {
         }
     }
     void Graph::printGraph() {
-        for(int neighbor=0; neighbor<this->get_size();neighbor++)
-        {
-            cout << neighbor << ", ";
-        }
-        cout << endl;
+        
+        int edges=0;
+        // for(int neighbor=0; neighbor<this->get_size();neighbor++)
+        // {
+        //     cout << neighbor << ", ";
+        // }
+        // cout << endl;
+        for (size_t i = 0; i < this->get_size(); i++)
+		{
+			for (size_t j = 0; j < this->get_size(); j++)
+			{
+				if (this->get_nei(i, j) != 0)
+					edges++;
+			}
+		}
+        cout << "Graph with " << this->get_size() << " vertices and " << edges << " edges." << endl;
+
     }
     
     
